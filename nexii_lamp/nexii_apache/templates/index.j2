@@ -1,0 +1,27 @@
+<headd>
+       <title>Ansible Demo</title>
+</head>
+<body>
+    <h3>
+        Thank you for reading this post. My IP Address is {{ ansible_eth0.ipv4.address }}. 
+        This is {{ ansible_system }} OS with {{ ansible_userspace_architecture }} architecture
+    </h3>
+    <p>
+        <strong>List of Databases:</strong> <br/>
+    <?php 
+ 
+    //Spoiler: don't do this at home!
+    $dbobj = mysql_connect('{{ ansible_lo.ipv4.address }}', '{{ dbuser }}', '{{ dbpasswd }}');
+    if (!$dbobj) { die('Could not connect: ' . mysql_error()); }
+ 
+    $result = mysql_query("SHOW DATABASES");
+    while ($res = mysql_fetch_assoc($result)){
+        echo $res['Database'] . "<br/>";
+    }
+ 
+    ?>
+    </p>
+    <br/>
+    <p><img src="nexiilabs-logo.jpg" alt="nexiilabs-logo.jpg"></p>
+</body>
+</html>

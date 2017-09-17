@@ -1,0 +1,3 @@
+---
+# vars file for nexii_apache
+ ubuntu_apache_package: apache2
