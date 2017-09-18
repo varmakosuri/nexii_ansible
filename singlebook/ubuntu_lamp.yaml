@@ -1,0 +1,42 @@
+---
+- hosts: acs
+  become: yes
+  tasks:
+  - name: ensure apache is installed
+    apt: name=apache2 state=present
+  - name: ensure apache is started
+    service: name=apache2 state=started enabled=yes
+  - name: install php server
+    apt: name= "{{ item }}" state=present update_cache=yes
+    with_items:
+      - php5
+      - libapache2-mod-php5
+    notify: apache server restart
+  - name: starting mysql-server
+    apt: name= "{{ item }}" state=present update_cache=yes
+    with_items:
+      - python-selinux
+      - mysql-server
+      - python-mysqldb
+    notify: restart mysql
+  - name:  create application database
+    mysql_db: name={{ item }} state=present
+    with_items:
+      - nexii_db1
+      - nexii_db2
+  - name: create application user
+    mysql_user: name=nexii password=nexii priv=*.*:ALL state=present
+  - name: download wordpress
+    unarchive: src=https://wordpress.org/latest.tar.gz dest=/var/www/html/ remote_src=yes
+  - name: command to excute
+    command: chown www-data.www-data -R /var/www/html/wordpress
+    notify: apache server restart
+  handlers:
+  - name: apache server restart
+    service: name=apache2 state=restarted
+  - name: restart mysql
+    service: name=mysql state=restarted
+   
+ 
+  
+
